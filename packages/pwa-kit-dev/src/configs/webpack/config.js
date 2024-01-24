@@ -21,6 +21,7 @@ import SpeedMeasurePlugin from 'speed-measure-webpack-plugin'
 
 import OverridesResolverPlugin from './overrides-plugin'
 import {sdkReplacementPlugin} from './plugins'
+import {makeRegExp} from './utils'
 import {CLIENT, SERVER, CLIENT_OPTIONAL, SSR, REQUEST_PROCESSOR} from './config-names'
 
 const projectDir = process.cwd()
@@ -346,13 +347,7 @@ const ruleForBabelLoader = (babelPlugins) => {
         test: /(\.js(x?)|\.ts(x?))$/,
         ...(EXT_OVERRIDES_DIR && EXT_EXTENDS
             ? // TODO: handle for array here when that's supported
-              {
-                  exclude: new RegExp(
-                      `${path.sep}node_modules(?!${path.sep}${
-                          path.sep === '/' ? EXT_EXTENDS : EXT_EXTENDS_WIN
-                      })`
-                  )
-              }
+              {exclude: makeRegExp(`/node_modules(?!/${EXT_EXTENDS})`)}
             : {exclude: /node_modules/}),
         use: [
             {
